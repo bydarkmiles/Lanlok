@@ -14,7 +14,7 @@ window.BOT = {
   howTo: [
     { where: "Личные сообщения", code: "баланс" },
     { where: "Общий чат", code: "Lanlok, баланс" },
-    { where: "Коротко", code: "⇨ @баланс" },
+    { where: "Коротко", code: "@баланс" },
     { where: "Клан-чат", code: "Lanlok, баланс" }
   ]
 };
