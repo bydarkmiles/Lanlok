@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="graphite">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lanlok — команды бота</title>
+  <meta name="description" content="Список команд Minecraft-бота Lanlok с поиском по похожим словам.">
+  <link rel="icon" href="avatar.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* заголовок «Навигация» чуть меньше, чтобы влез в колонку */
+    .links h2.nav-title { font-size: 36px; letter-spacing: -.5px; margin-bottom: 12px; }
+
+    /* красная подсветка раздела, куда перешли по ссылке */
+    .flash {
+      position: relative;
+      outline: 3px solid #ff2b2b;
+      outline-offset: 6px;
+      border-radius: 4px;
+      animation: flashRed 2.6s ease-out both;
+    }
+    .searchzone.flash { outline-offset: -8px; }
+    @keyframes flashRed {
+      0%, 55% { outline-color: #ff2b2b; box-shadow: 0 0 22px 4px rgba(255,43,43,.55); }
+      100%    { outline-color: rgba(255,43,43,0); box-shadow: 0 0 0 0 rgba(255,43,43,0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .flash { animation: none !important; box-shadow: 0 0 22px 4px rgba(255,43,43,.55); }
+    }
+  </style>
+</head>
+<body>
+
+<main class="window" id="top">
+
+  <!-- верхняя панель с вкладками и переключателем темы -->
+  <nav class="bar">
+    <div class="tabs">
+      <a class="tab" href="#top">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2zm-2 8h14v10H5z"/></svg>
+        <span id="tabDate">Сегодня</span>
+      </a>
+      <a class="tab" href="#search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span>Поиск</span>
+      </a>
+      <a class="tab" href="#commands">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6.5 7 .8-5.2 4.8 1.4 7L12 17.600 5.800 21.100l1.400-7L2 9.300l7-.8z"/></svg>
+        <span>Команды <b id="tabCount"></b></span>
+      </a>
+    </div>
+    <div class="dots" role="group" aria-label="Тема оформления">
+      <button class="dot" data-theme="light"    title="Светлая"  aria-label="Светлая тема"></button>
+      <button class="dot" data-theme="graphite" title="Графит"   aria-label="Графитовая тема"></button>
+      <button class="dot" data-theme="ink"      title="Чёрная"   aria-label="Чёрная тема"></button>
+    </div>
+  </nav>
+
+  <!-- профиль бота -->
+  <header class="profile">
+    <div class="avatar"><img id="avatar" src="avatar.png" alt="Аватар бота" onerror="this.onerror=null;this.src='avatar.svg'"></div>
+
+    <div class="about">
+      <p class="line"><b id="botUser"></b> • <span id="botOnline">Minecraft-бот</span></p>
+      <div class="note">
+        <div class="note-h"><span class="tag">Note :</span></div>
+        <div class="note-b" id="botNote"></div>
+      </div>
+    </div>
+
+    <aside class="links">
+      <h2 class="glow nav-title">Навигация</h2>
+      <ul>
+        <li><a href="#search">Поиск команд</a></li>
+        <li><a href="#commands">Все команды</a></li>
+        <li><a href="#howto">Как вызвать</a></li>
+      </ul>
+    </aside>
+    <a id="ghLink" href="#" hidden aria-hidden="true" tabindex="-1"></a>
+  </header>
+
+  <!-- поиск -->
+  <section class="searchzone" id="search">
+    <label class="searchbox">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.400"/><path d="m20 20-3.800-3.800" stroke="currentColor" stroke-width="2.400" stroke-linecap="round"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Найти команду… например «баланс», «перевест», «ставка»">
+      <kbd id="kbd">/</kbd>
+    </label>
+    <p class="hint" id="hint"></p>
+  </section>
+
+  <!-- основное содержимое -->
+  <div class="body">
+    <aside class="side">
+      <div class="btn-row">
+        <button class="btn" id="btnAll"><svg viewBox="0 0 24 24"><path d="M6 4v16l14-8z"/></svg>Все</button>
+        <button class="btn" id="btnAdmin"><svg viewBox="0 0 24 24"><path d="M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7z"/></svg>Админ</button>
+      </div>
+
+      <table class="tracks" id="cats">
+        <thead><tr><th>#</th><th>Раздел</th><th class="r">Команд</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="howto" id="howto">
+        <div class="howto-h">Как вызвать команду</div>
+        <ul id="howList"></ul>
+        <p>Нажми на любую строку с командой в карточке — она скопируется.</p>
+      </div>
+    </aside>
+
+    <section class="feed" id="commands">
+      <div class="feed-h"><span id="feedTitle">Все команды</span></div>
+      <div id="list"></div>
+      <a href="#" class="more" id="more" hidden>Показать ещё команды…</a>
+    </section>
+  </div>
+
+  <footer class="activity">
+    <span>Валюта: <b id="cur"></b></span>
+    <span class="sep">—▶</span>
+    <span id="srv"></span>
+  </footer>
+  <div class="made">( Команды бота • <span id="year"></span> )</div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Скопировано</div>
+
+<script src="commands.js"></script>
+<script src="app.js"></script>
+<script>
+  // подсветка раздела при клике на ссылки навигации и вкладки
+  (() => {
+    let timer;
+    document.addEventListener("click", e => {
+      const a = e.target.closest('.links a[href^="#"], .tab[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute("href").slice(1);
+      const target = id && id !== "top" && document.getElementById(id);
+      if (!target) return;
+      document.querySelectorAll(".flash").forEach(el => el.classList.remove("flash"));
+      clearTimeout(timer);
+      void target.offsetWidth;            // перезапуск анимации при повторном клике
+      target.classList.add("flash");
+      timer = setTimeout(() => target.classList.remove("flash"), 2700);
+    });
+  })();
+</script>
+</body>
+</html>
