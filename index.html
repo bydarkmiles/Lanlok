@@ -11,10 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* заголовок «Навигация» чуть меньше, чтобы влез в колонку */
+
     .links h2.nav-title { font-size: 36px; letter-spacing: -.5px; margin-bottom: 12px; }
 
-    /* красная подсветка раздела, куда перешли по ссылке */
     .flash {
       position: relative;
       outline: 3px solid #ff2b2b;
@@ -36,7 +35,6 @@
 
 <main class="window" id="top">
 
-  <!-- верхняя панель с вкладками и переключателем темы -->
   <nav class="bar">
     <div class="tabs">
       <a class="tab" href="#top">
@@ -59,7 +57,6 @@
     </div>
   </nav>
 
-  <!-- профиль бота -->
   <header class="profile">
     <div class="avatar"><img id="avatar" src="avatar.png" alt="Аватар бота" onerror="this.onerror=null;this.src='avatar.svg'"></div>
 
@@ -82,7 +79,6 @@
     <a id="ghLink" href="#" hidden aria-hidden="true" tabindex="-1"></a>
   </header>
 
-  <!-- поиск -->
   <section class="searchzone" id="search">
     <label class="searchbox">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.400"/><path d="m20 20-3.800-3.800" stroke="currentColor" stroke-width="2.400" stroke-linecap="round"/></svg>
@@ -93,7 +89,6 @@
     <p class="hint" id="hint"></p>
   </section>
 
-  <!-- основное содержимое -->
   <div class="body">
     <aside class="side">
       <div class="btn-row">
@@ -133,7 +128,6 @@
 <script src="commands.js"></script>
 <script src="app.js"></script>
 <script>
-  // подсветка раздела при клике на ссылки навигации и вкладки
   (() => {
     let timer;
     document.addEventListener("click", e => {
@@ -144,7 +138,7 @@
       if (!target) return;
       document.querySelectorAll(".flash").forEach(el => el.classList.remove("flash"));
       clearTimeout(timer);
-      void target.offsetWidth;            // перезапуск анимации при повторном клике
+      void target.offsetWidth;            
       target.classList.add("flash");
       timer = setTimeout(() => target.classList.remove("flash"), 2700);
     });
