@@ -14,7 +14,7 @@ window.BOT = {
   howTo: [
     { where: "Личные сообщения", code: "баланс" },
     { where: "Общий чат", code: "Lanlok, баланс" },
-    { where: "Коротко", code: "@баланс" },
+    { where: "Коротко", code: "⇨ @баланс" },
     { where: "Клан-чат", code: "Lanlok, баланс" }
   ]
 };
@@ -41,8 +41,8 @@ window.COMMANDS = [
     example: "баланс #43",
     desc: "Показывает, сколько у вас амиков. Админы могут посмотреть чужой баланс: «баланс #ID» или «баланс Ник»." },
 
-  { cat: "main", name: "топ",
-    aliases: ["айди", "id"],
+  { cat: "main", name: "id",
+    aliases: ["айди", "топ"],
     usage: "топ",
     example: "топ Ник",
     desc: "Показывает ваш ID (#номер). Если указать ник - покажет ID этого игрока." },
@@ -52,6 +52,156 @@ window.COMMANDS = [
     usage: "перевод #ID Сумма",
     example: "перевод #43 100",
     desc: "Переводит амики другому игроку. Вместо #ID можно написать ник. Нужно, чтобы у получателя не был заблокирован аккаунт." },
+
+  { cat: "main", name: "поцеловать",
+    aliases: [""],
+    usage: "поцеловать {nick}",
+    example: "поцеловать luxe228",
+    desc: "Поцеловать игрока." },
+
+  { cat: "main", name: "обнять",
+    aliases: [""],
+    usage: "обнять {nick}",
+    example: "обнять luxe228",
+    desc: "Обнять игрока" },
+
+  { cat: "main", name: "погладить",
+    aliases: [""],
+    usage: "погладить {nick}",
+    example: "погладить pinkiesad",
+    desc: "Погладить игрока." },
+
+  { cat: "main", name: "раздеть",
+    aliases: [""],
+    usage: "раздеть {nick}",
+    example: "раздеть Yoplip",
+    desc: "Снять одежду с игрока." },
+
+  { cat: "main", name: "слизать сперму",
+    aliases: [""],
+    usage: "слизать сперму {nick}",
+    example: "слизать сперму PomidorOleg",
+    desc: "Слизать сперму с игрока." },
+
+  { cat: "main", name: "мяукнуть",
+    aliases: [""],
+    usage: "мяукнуть {nick}",
+    example: "мяукнуть Lucarios",
+    desc: "Мяукнуть игроку." },
+
+  { cat: "main", name: "гавкнуть",
+    aliases: [""],
+    usage: "гавкнуть {nick}",
+    example: "гавкнуть АнальныйДебошир",
+    desc: "Гавкнуть на игрока" },
+
+  { cat: "main", name: "подмигнуть",
+    aliases: [""],
+    usage: "подмигнуть {nick}",
+    example: "подмигнуть SantaModz",
+    desc: "Подмигнуть игроку." },
+
+  { cat: "main", name: "минет",
+    aliases: ["отсосать"],
+    usage: "минет {nick}",
+    example: "минет {nick}",
+    desc: "Сделать минет/отсосать игроку." },
+
+  { cat: "main", name: "куни",
+    aliases: ["отлизать"],
+    usage: "куни {nick}",
+    example: "куни Cat_",
+    desc: "Сделать куни/отлизать игроку." },
+
+  { cat: "main", name: "трахнуть",
+    aliases: ["выебать"],
+    usage: "трахнуть {nick}",
+    example: "трахнуть LenaHG",
+    desc: "Трахнуть игрока" },
+
+  { cat: "main", name: "лапать",
+    aliases: [""],
+    usage: "лапать {nick}",
+    example: "лапать Lanlok",
+    desc: "Облапать игрока." },
+
+  { cat: "main", name: "подрочить",
+    aliases: ["подрочить на"],
+    usage: "подрочить {nick}",
+    example: "подрочить NikitaTop4ik0909",
+    desc: "Подрочить игроку." },
+
+  { cat: "main", name: "лизнуть",
+    aliases: [""],
+    usage: "лизнуть {nick}",
+    example: "лизнуть RayFat",
+    desc: "Лизнуть игрока." },
+
+  { cat: "main", name: "связать",
+    aliases: ["привязать"],
+    usage: "связать {nick}",
+    example: "связать luxe228",
+    desc: "Связать или привязать игрока." },
+
+  { cat: "main", name: "дать в рот",
+    aliases: [""],
+    usage: "дать в рот {nick}",
+    example: "дать в рот hamskiy_volk",
+    desc: "Дать в рот игроку" },
+
+  { cat: "main", name: "дать пять",
+    aliases: [""],
+    usage: "дать пять {nick}",
+    example: "дать пять Lucarios",
+    desc: "Дать пять игроку." },
+
+  { cat: "main", name: "скрутить",
+    aliases: [""],
+    usage: "скрутить {nick}",
+    example: "скрутить luxe228",
+    desc: "Скрутить игрока." },
+
+  { cat: "main", name: "облить",
+    aliases: [""],
+    usage: "облить {nick}",
+    example: "облить miroswagger",
+    desc: "Облить чем-то игрока." },
+
+  { cat: "main", name: "надеть шляпу на",
+    aliases: [""],
+    usage: "надеть шляпу на {nick}",
+    example: "надеть шляпу на ХУЯСЯя",
+    desc: "Надеть шляпу на игрока." },
+
+  { cat: "main", name: "укусить",
+    aliases: [""],
+    usage: "укусить {nick}",
+    example: "укусить Yoplip",
+    desc: "Укусить игрока." },
+
+  { cat: "main", name: "сжечь",
+    aliases: [""],
+    usage: "сжечь {nick}",
+    example: "сжечь luxe228",
+    desc: "Сжечь игрока." },
+
+  { cat: "main", name: "ударить",
+    aliases: ["дать пизды", "уебать", "убить", "избить"],
+    usage: "ударить {nick}",
+    example: "ударить luxe228",
+    desc: "Ударить/избить/дать пизды/уебать/убить игрока." },
+
+  { cat: "main", name: "расстрелять",
+    aliases: [""],
+    usage: "расстреляь {nick}",
+    example: "расстрелять luxe228",
+    desc: "Расстрелять игрока." },
+
+  { cat: "main", name: "запретить",
+    aliases: [""],
+    usage: "запретить {nick}",
+    example: "запретить Ignat",
+    desc: "РКН недоволен этим игроком." },
 
   /* ---------------- КАЗИНО И ИГРЫ ---------------- */
   { cat: "casino", name: "рулетка",
