@@ -104,7 +104,7 @@ window.COMMANDS = [
   { cat: "main", name: "минет",
     aliases: ["отсосать"],
     usage: "минет {nick}",
-    example: "минет {nick}",
+    example: "минет Frisk",
     desc: "Сделать минет/отсосать игроку." },
 
   { cat: "main", name: "куни",
@@ -122,7 +122,7 @@ window.COMMANDS = [
   { cat: "main", name: "лапать",
     aliases: [""],
     usage: "лапать {nick}",
-    example: "лапать Lanlok",
+    example: "лапать Frisk",
     desc: "Облапать игрока." },
 
   { cat: "main", name: "подрочить",
@@ -134,7 +134,7 @@ window.COMMANDS = [
   { cat: "main", name: "лизнуть",
     aliases: [""],
     usage: "лизнуть {nick}",
-    example: "лизнуть RayFat",
+    example: "лизнуть Frisk",
     desc: "Лизнуть игрока." },
 
   { cat: "main", name: "связать",
