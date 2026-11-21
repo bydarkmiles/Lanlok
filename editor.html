@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Редактор сайта команд</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page:#2c2c2c; --win:#1c1c1c; --bar:#4a4a4a; --card:#181818; --line:#bdbdbd;
+    --text:#f4f4f4; --muted:#a9a9a9; --tag:#5a5a5a; --btn:#d4d4d4; --btn-text:#151515;
+    --head:#8a8686; --shade:#5e5b5b; --red:#ff5a5a; --green:#7ddc8a;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:30px 16px 70px; background:var(--page); color:var(--text);
+         font:500 15px/1.45 "Poppins","Segoe UI",system-ui,sans-serif; }
+  button, input, select, textarea { font:inherit; color:inherit; }
+  button { cursor:pointer; }
+  .app { max-width:1060px; margin:0 auto; background:var(--win); border:3px solid #050505;
+         border-radius:14px; box-shadow:12px 12px 0 #000; overflow:hidden; }
+  .top { background:var(--bar); padding:16px 22px; display:flex; flex-wrap:wrap; gap:14px;
+         align-items:center; justify-content:space-between; }
+  .top h1 { margin:0; font-size:22px; }
+  .top small { display:block; color:#ddd; font-weight:400; font-size:13px; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .btn { background:var(--btn); color:var(--btn-text); border:0; border-radius:10px; padding:9px 16px; font-weight:600; }
+  .btn:hover { filter:brightness(1.12); }
+  .btn.ghost { background:transparent; color:var(--text); border:2px solid var(--line); }
+  .btn.ghost:hover { background:var(--tag); }
+  .btn.danger { background:transparent; color:var(--red); border:2px solid var(--red); }
+  .btn.danger:hover { background:var(--red); color:#111; }
+  .btn.small { padding:4px 11px; font-size:13px; border-radius:8px; }
+  .btn.primary { background:#fff; }
+  #status { font-size:13px; font-weight:600; }
+  #status.dirty { color:#ffd166; } #status.ok { color:var(--green); }
+  #banner:not(:empty) { background:#3a3320; border-bottom:2px solid #ffd166; padding:10px 22px; font-size:14px; }
+  #banner button { margin-left:10px; }
+
+  .cols { display:grid; grid-template-columns:260px 1fr; gap:0; min-height:520px; }
+  aside { border-right:3px solid #050505; padding:16px; background:#171717; }
+  aside h3 { margin:14px 0 8px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  aside h3:first-child { margin-top:0; }
+  .nav { display:flex; width:100%; justify-content:space-between; gap:8px; text-align:left;
+         background:transparent; border:2px solid transparent; padding:8px 10px; border-radius:8px; margin-bottom:3px; }
+  .nav:hover { background:var(--tag); }
+  .nav.on { background:var(--btn); color:var(--btn-text); }
+  .nav span:last-child { opacity:.65; }
+  .nav.add { border:2px dashed var(--line); justify-content:center; margin-top:8px; }
+  main { padding:22px; min-width:0; }
+  main h2 { margin:0 0 4px; font-size:22px; }
+  .lead { color:var(--muted); margin:0 0 18px; font-size:14px; }
+
+  .box { border:2px solid var(--line); background:var(--card); padding:14px 16px; margin-bottom:18px; box-shadow:5px 5px 0 var(--shade); }
+  .box h4 { margin:0 0 10px; font-size:15px; }
+  label { display:block; font-size:13px; color:var(--muted); margin:10px 0 4px; font-weight:600; }
+  label:first-child { margin-top:0; }
+  input[type=text], select, textarea {
+    width:100%; background:#101010; border:2px solid #666; border-radius:6px; padding:8px 10px; outline:0; }
+  input:focus, select:focus, textarea:focus { border-color:var(--btn); }
+  textarea { resize:vertical; min-height:70px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .grow { flex:1; min-width:180px; }
+  .check { display:flex; gap:8px; align-items:center; color:var(--text); font-size:14px; margin-top:12px; }
+  .check input { width:18px; height:18px; }
+
+  .cmd { border:2px solid var(--line); background:var(--card); margin-bottom:10px; }
+  .cmd-h { display:flex; gap:8px; align-items:center; padding:8px 10px; flex-wrap:wrap; }
+  .cmd-h b { background:var(--tag); padding:0 10px; }
+  .cmd-h .meta { color:var(--muted); font-size:13px; }
+  .cmd-h .push { margin-left:auto; display:flex; gap:6px; }
+  .cmd p { margin:0; padding:0 10px 9px; font-size:13.5px; color:#d6d6d6; }
+  .badge { background:var(--btn); color:var(--btn-text); font-size:11px; font-weight:700; padding:0 8px; }
+  .empty { border:2px dashed var(--line); padding:24px; text-align:center; color:var(--muted); margin-bottom:14px; }
+
+  ol.steps { padding-left:20px; margin:0; } ol.steps li { margin-bottom:8px; }
+  code { background:#101010; border:1px solid #555; padding:0 6px; border-radius:4px; font-size:13px; }
+  .tip { color:var(--muted); font-size:13px; margin:8px 0 0; }
+
+  #overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); display:none; align-items:flex-start;
+             justify-content:center; padding:30px 14px; overflow:auto; z-index:50; }
+  #overlay.show { display:flex; }
+  .modal { background:var(--win); border:3px solid #050505; box-shadow:10px 10px 0 #000; border-radius:12px;
+           width:100%; max-width:640px; padding:20px 22px; }
+  .modal h3 { margin:0 0 6px; }
+  .modal .row.end { justify-content:flex-end; margin-top:18px; }
+  #toast { position:fixed; left:50%; bottom:24px; transform:translate(-50%,30px); background:var(--btn); color:var(--btn-text);
+           padding:9px 20px; font-weight:600; border-radius:10px; opacity:0; pointer-events:none; transition:.2s; z-index:60; }
+  #toast.show { opacity:1; transform:translate(-50%,0); }
+  @media (max-width:800px){ .cols{grid-template-columns:1fr;} aside{border-right:0;border-bottom:3px solid #050505;} body{padding:12px 8px 50px;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div><h1>Редактор сайта команд</h1><small>Добавляй разделы и команды кнопками — без кода</small></div>
+    <div class="actions">
+      <span id="status"></span>
+      <button class="btn primary" data-act="download">⬇ Скачать commands.js</button>
+      <button class="btn ghost" data-act="copy">Копировать код</button>
+    </div>
+  </div>
+  <div id="banner"></div>
+  <div class="cols">
+    <aside id="side"></aside>
+    <main id="main"></main>
+  </div>
+</div>
+<div id="overlay"><div class="modal" id="modal"></div></div>
+<div id="toast"></div>
+
+<script src="commands.js"></script>
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  const clone = o => JSON.parse(JSON.stringify(o));
+
+  /* ---------- данные ---------- */
+  const DRAFT = "lanlok_editor_draft_v1";
+  const state = { bot: clone(window.BOT || {}), cats: clone(window.CATEGORIES || []), cmds: clone(window.COMMANDS || []) };
+  let dirty = false, view = { t: "cat", id: (state.cats[0] || {}).id }, draftLoaded = false;
+
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT) || "null");
+    if (d && d.bot && d.cats && d.cmds) { Object.assign(state, d); dirty = draftLoaded = true; view.id = (state.cats[0] || {}).id; }
+  } catch (_) {}
+
+  const uid = () => "sec_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  const cat = id => state.cats.find(c => c.id === id);
+  const count = id => state.cmds.filter(c => c.cat === id).length;
+
+  function changed() {
+    dirty = true;
+    try { localStorage.setItem(DRAFT, JSON.stringify(state)); } catch (_) {}
+    render();
+  }
+  function toast(msg) {
+    const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1800);
+  }
+
+  /* ---------- сборка файла commands.js ---------- */
+  // <serialize>
+  function serialize(bot, cats, cmds) {
+    const order = new Map(cats.map((c, i) => [c.id, i]));
+    const rank = c => (order.has(c.cat) ? order.get(c.cat) : 999);
+    const sorted = cmds.map((c, i) => [c, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(x => x[0]);
+    const one = c => {
+      const o = { cat: c.cat, name: c.name };
+      if (c.group) o.group = c.group;
+      const al = (c.aliases || []).map(s => String(s).trim()).filter(Boolean);
+      if (al.length) o.aliases = al;
+      o.usage = c.usage || c.name;
+      if (c.example) o.example = c.example;
+      o.desc = c.desc || "";
+      if (c.admin) o.admin = true;
+      return JSON.stringify(o);
+    };
+    const lines = []; let last = null;
+    sorted.forEach(c => {
+      if (c.cat !== last) {
+        const ct = cats.find(x => x.id === c.cat);
+        lines.push({ comment: "  /* ---------- " + (ct ? ct.name : c.cat) + " ---------- */" });
+        last = c.cat;
+      }
+      lines.push({ cmd: one(c) });
+    });
+    const lastCmd = lines.map(l => !!l.cmd).lastIndexOf(true);
+    const body = lines.map((l, i) => l.comment ? l.comment : "  " + l.cmd + (i === lastCmd ? "" : ",")).join("\n");
+    const catLines = cats.map(c => {
+      const o = { id: c.id, name: c.name };
+      if (c.icon) o.icon = c.icon;
+      if (c.desc) o.desc = c.desc;
+      return "  " + JSON.stringify(o);
+    }).join(",\n");
+    return "/* Файл создан редактором (editor.html). Его можно загрузить обратно в репозиторий вместо старого. */\n\n" +
+      "window.BOT = " + JSON.stringify(bot, null, 2) + ";\n\n" +
+      "window.CATEGORIES = [\n" + catLines + "\n];\n\n" +
+      "window.COMMANDS = [\n" + body + "\n];\n";
+  }
+  // </serialize>
+
+  /* ---------- отрисовка ---------- */
+  function render() {
+    const st = $("#status");
+    st.textContent = dirty ? "● есть несохранённые изменения" : "✓ без изменений";
+    st.className = dirty ? "dirty" : "ok";
+    $("#banner").innerHTML = draftLoaded
+      ? 'Загружен ваш черновик из прошлого раза. <button class="btn small ghost" data-act="resetDraft">Сбросить к версии с сайта</button>' : "";
+
+    $("#side").innerHTML =
+      "<h3>Разделы</h3>" +
+      state.cats.map(c => `<button class="nav${view.t === "cat" && view.id === c.id ? " on" : ""}" data-act="openCat" data-id="${esc(c.id)}"><span>${esc(c.name)}</span><span>${count(c.id)}</span></button>`).join("") +
+      '<button class="nav add" data-act="addCat">+ Новый раздел</button>' +
+      "<h3>Ещё</h3>" +
+      `<button class="nav${view.t === "bot" ? " on" : ""}" data-act="openBot"><span>Информация о боте</span></button>` +
+      `<button class="nav${view.t === "import" ? " on" : ""}" data-act="openImport"><span>Импорт взаимодействий</span></button>` +
+      `<button class="nav${view.t === "help" ? " on" : ""}" data-act="openHelp"><span>Как опубликовать</span></button>`;
+
+    const m = $("#main");
+    if (view.t === "bot") m.innerHTML = botView();
+    else if (view.t === "import") m.innerHTML = importView();
+    else if (view.t === "help") m.innerHTML = helpView();
+    else m.innerHTML = catView();
+  }
+
+  function catView() {
+    const c = cat(view.id);
+    if (!c) return '<div class="empty">Раздел не выбран. Создай новый кнопкой «+ Новый раздел» слева.</div>';
+    const list = state.cmds.map((x, i) => ({ x, i })).filter(o => o.x.cat === c.id);
+    const idx = state.cats.indexOf(c);
+    return `
+      <h2>${esc(c.name)}</h2>
+      <p class="lead">Раздел на сайте. Здесь можно переименовать его, добавить описание и менять команды.</p>
+      <div class="box">
+        <h4>Настройки раздела</h4>
+        <label>Название раздела</label>
+        <input type="text" id="catName" value="${esc(c.name)}" maxlength="40">
+        <label>Описание (необязательно — показывается над командами, когда раздел выбран)</label>
+        <textarea id="catDesc" placeholder="Например: команды для работы с казной">${esc(c.desc || "")}</textarea>
+        <div class="row" style="margin-top:12px">
+          <button class="btn small ghost" data-act="catUp" ${idx === 0 ? "disabled" : ""}>↑ Выше</button>
+          <button class="btn small ghost" data-act="catDown" ${idx === state.cats.length - 1 ? "disabled" : ""}>↓ Ниже</button>
+          <button class="btn small danger" data-act="delCat" style="margin-left:auto">Удалить раздел</button>
+        </div>
+      </div>
+      <div class="row" style="justify-content:space-between;margin-bottom:12px">
+        <h4 style="margin:0">Команды (${list.length})</h4>
+        <button class="btn" data-act="addCmd">+ Добавить команду</button>
+      </div>
+      ${list.length ? list.map(o => cmdCard(o.x, o.i)).join("") : '<div class="empty">В этом разделе пока нет команд. Нажми «+ Добавить команду».</div>'}`;
+  }
+
+  function cmdCard(c, i) {
+    return `<div class="cmd">
+      <div class="cmd-h">
+        <b>${esc(c.name)}</b>
+        ${c.group ? `<span class="meta">группа: ${esc(c.group)}</span>` : ""}
+        ${c.admin ? '<span class="badge">админ</span>' : ""}
+        <span class="push">
+          <button class="btn small ghost" data-act="cmdUp" data-i="${i}" title="Выше">↑</button>
+          <button class="btn small ghost" data-act="cmdDown" data-i="${i}" title="Ниже">↓</button>
+          <button class="btn small" data-act="editCmd" data-i="${i}">Изменить</button>
+          <button class="btn small danger" data-act="delCmd" data-i="${i}">✕</button>
+        </span>
+      </div>
+      <p>${esc(c.desc || "")}</p>
+    </div>`;
+  }
+
+  function botView() {
+    const b = state.bot;
+    return `
+      <h2>Информация о боте</h2>
+      <p class="lead">Эти данные показываются в шапке сайта.</p>
+      <div class="box">
+        <div class="row">
+          <div class="grow"><label>Имя бота</label><input type="text" data-bot="name" value="${esc(b.name)}"></div>
+          <div class="grow"><label>Ник (в шапке)</label><input type="text" data-bot="handle" value="${esc(b.handle)}"></div>
+        </div>
+        <div class="row">
+          <div class="grow"><label>Надпись «Online now» (статус)</label><input type="text" data-bot="status" value="${esc(b.status)}"></div>
+          <div class="grow"><label>Название валюты</label><input type="text" data-bot="currency" value="${esc(b.currency)}"></div>
+        </div>
+        <div class="row">
+          <div class="grow"><label>Сервер</label><input type="text" data-bot="server" value="${esc(b.server)}"></div>
+          <div class="grow"><label>Версия</label><input type="text" data-bot="version" value="${esc(b.version)}"></div>
+        </div>
+        <label>Заметка в шапке (каждая строка — отдельный абзац)</label>
+        <textarea data-bot="note" style="min-height:100px">${esc((b.note || []).join("\n"))}</textarea>
+        <label>Блок «Как вызвать команду» (каждая строка: <code>Где | что написать</code>)</label>
+        <textarea data-bot="howTo" style="min-height:100px">${esc((b.howTo || []).map(h => h.where + " | " + h.code).join("\n"))}</textarea>
+      </div>`;
+  }
+
+  function importView() {
+    return `
+      <h2>Импорт взаимодействий</h2>
+      <p class="lead">Загрузи файл <code>custom_commands.txt</code> из папки бота — редактор сам создаст раздел «Взаимодействия» и добавит в него новые команды по группам (Нежности, Интим…). Уже существующие команды и их описания не трогаются.</p>
+      <div class="box">
+        <input type="file" id="importFile" accept=".txt,text/plain">
+        <p class="tip">Файл никуда не отправляется — он читается прямо в твоём браузере.</p>
+      </div>`;
+  }
+
+  function helpView() {
+    return `
+      <h2>Как опубликовать изменения</h2>
+      <p class="lead">Редактор меняет только копию в браузере. Чтобы изменения появились на сайте, выполни три шага:</p>
+      <div class="box"><ol class="steps">
+        <li>Нажми <b>«Скачать commands.js»</b> вверху страницы.</li>
+        <li>Открой свой репозиторий на GitHub → <b>Add file → Upload files</b> → перетащи скачанный <code>commands.js</code> (он заменит старый) → <b>Commit changes</b>.</li>
+        <li>Подожди минуту и обнови сайт (Ctrl+F5).</li>
+      </ol>
+      <p class="tip">Если страница редактора закроется раньше времени — не страшно: твои правки сохраняются в браузере как черновик.</p></div>
+      <div class="box"><h4>Как это пользоваться</h4><ol class="steps">
+        <li><b>+ Новый раздел</b> (слева) — создаёт раздел, он сразу появится в списке на сайте.</li>
+        <li><b>+ Добавить команду</b> — открывает форму: название, как написать, описание.</li>
+        <li>Стрелки ↑ ↓ меняют порядок разделов и команд.</li>
+      </ol></div>`;
+  }
+
+  /* ---------- форма команды ---------- */
+  function openForm(i) {
+    const isNew = i == null;
+    const c = isNew ? { cat: view.id, name: "", aliases: [], usage: "", example: "", desc: "", group: "", admin: false } : state.cmds[i];
+    $("#modal").innerHTML = `
+      <h3>${isNew ? "Новая команда" : "Редактирование: " + esc(c.name)}</h3>
+      <label>Название команды *</label>
+      <input type="text" id="f_name" value="${esc(c.name)}" placeholder="например: баланс">
+      <div class="row">
+        <div class="grow"><label>Раздел</label>
+          <select id="f_cat">${state.cats.map(x => `<option value="${esc(x.id)}"${x.id === c.cat ? " selected" : ""}>${esc(x.name)}</option>`).join("")}</select></div>
+        <div class="grow"><label>Группа (необязательно)</label><input type="text" id="f_group" value="${esc(c.group || "")}" placeholder="например: Нежности"></div>
+      </div>
+      <label>Другие названия (через запятую)</label>
+      <input type="text" id="f_aliases" value="${esc((c.aliases || []).join(", "))}" placeholder="бал, bal">
+      <label>Как написать</label>
+      <input type="text" id="f_usage" value="${esc(c.usage || "")}" placeholder="перевод #ID Сумма">
+      <label>Пример</label>
+      <input type="text" id="f_example" value="${esc(c.example || "")}" placeholder="перевод #43 100">
+      <label>Описание — что делает команда</label>
+      <textarea id="f_desc">${esc(c.desc || "")}</textarea>
+      <label class="check"><input type="checkbox" id="f_admin"${c.admin ? " checked" : ""}> Только для админов (на карточке будет значок «админ»)</label>
+      <div class="row end">
+        <button class="btn ghost" data-act="closeForm">Отмена</button>
+        <button class="btn" data-act="saveCmd" data-i="${isNew ? "" : i}">Сохранить</button>
+      </div>`;
+    $("#overlay").classList.add("show");
+    setTimeout(() => $("#f_name").focus(), 30);
+  }
+  const closeForm = () => $("#overlay").classList.remove("show");
+
+  function saveCmd(i) {
+    const name = $("#f_name").value.trim();
+    if (!name) { toast("Впиши название команды"); $("#f_name").focus(); return; }
+    const c = {
+      cat: $("#f_cat").value, name,
+      group: $("#f_group").value.trim(),
+      aliases: $("#f_aliases").value.split(",").map(s => s.trim()).filter(Boolean),
+      usage: $("#f_usage").value.trim() || name,
+      example: $("#f_example").value.trim(),
+      desc: $("#f_desc").value.trim(),
+      admin: $("#f_admin").checked
+    };
+    if (i === "" || i == null) state.cmds.push(c); else state.cmds[+i] = c;
+    view = { t: "cat", id: c.cat };
+    closeForm(); changed(); toast("Сохранено");
+  }
+
+  /* ---------- перестановки ---------- */
+  function swapCmd(i, dir) {
+    const c = state.cmds[i]; let j = i + dir;
+    while (j >= 0 && j < state.cmds.length && state.cmds[j].cat !== c.cat) j += dir;
+    if (j < 0 || j >= state.cmds.length) return;
+    [state.cmds[i], state.cmds[j]] = [state.cmds[j], state.cmds[i]]; changed();
+  }
+  function moveCat(dir) {
+    const i = state.cats.findIndex(c => c.id === view.id), j = i + dir;
+    if (j < 0 || j >= state.cats.length) return;
+    [state.cats[i], state.cats[j]] = [state.cats[j], state.cats[i]]; changed();
+  }
+
+  /* ---------- импорт custom_commands.txt ---------- */
+  function parseCustom(text) {
+    const groups = []; let cur = null, blk = [];
+    const flush = () => {
+      if (blk.length && cur) cur.items.push({ name: blk[0], target: blk.slice(1).some(r => r.includes("{nick}")) });
+      blk = [];
+    };
+    text.split(/\r?\n/).forEach(l => {
+      const s = l.trim();
+      if (s.startsWith("#")) return;
+      if (/^group:/i.test(s)) { flush(); cur = { name: s.slice(6).trim(), items: [] }; groups.push(cur); return; }
+      if (!s) { flush(); return; }
+      blk.push(s);
+    });
+    flush();
+    return groups;
+  }
+  function applyImport(groups) {
+    let sec = cat("interactions") || state.cats.find(c => c.name.toLowerCase() === "взаимодействия");
+    if (!sec) { sec = { id: "interactions", name: "Взаимодействия" }; state.cats.splice(1, 0, sec); }
+    const known = n => state.cmds.find(c => c.name.toLowerCase() === n.toLowerCase() || (c.aliases || []).some(a => a.toLowerCase() === n.toLowerCase()));
+    let added = 0, tagged = 0; const missing = [];
+    const inFile = new Set();
+    groups.forEach(g => g.items.forEach(it => {
+      inFile.add(it.name.toLowerCase());
+      const ex = known(it.name);
+      if (ex) { if (!ex.group) { ex.group = g.name; tagged++; } return; }
+      state.cmds.push({
+        cat: sec.id, name: it.name, group: g.name, aliases: [],
+        usage: it.target ? it.name + " Ник" : it.name,
+        desc: it.target ? "Взаимодействие с игроком, который сейчас в игре." : "Действие без цели.",
+        admin: false
+      });
+      added++;
+    }));
+    state.cmds.filter(c => c.cat === sec.id && c.group && ![c.name, ...(c.aliases || [])].some(n => inFile.has(n.toLowerCase())))
+      .forEach(c => missing.push(c.name));
+    view = { t: "cat", id: sec.id }; changed();
+    alert(`Готово.\nДобавлено новых команд: ${added}\nГруппа проставлена у существующих: ${tagged}` +
+      (missing.length ? `\n\nЕсть на сайте, но нет в файле бота (проверь, не устарели ли):\n${missing.join(", ")}` : ""));
+  }
+
+  /* ---------- события ---------- */
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    const act = b.dataset.act, i = b.dataset.i;
+    switch (act) {
+      case "openCat": view = { t: "cat", id: b.dataset.id }; render(); break;
+      case "openBot": view = { t: "bot" }; render(); break;
+      case "openImport": view = { t: "import" }; render(); break;
+      case "openHelp": view = { t: "help" }; render(); break;
+      case "addCat": {
+        const name = (prompt("Название нового раздела:") || "").trim();
+        if (!name) return;
+        const id = uid(); state.cats.push({ id, name }); view = { t: "cat", id }; changed(); toast("Раздел создан");
+        break;
+      }
+      case "delCat": {
+        const c = cat(view.id), n = count(c.id);
+        if (!confirm(`Удалить раздел «${c.name}»${n ? ` вместе с ${n} командами` : ""}?`)) return;
+        state.cmds = state.cmds.filter(x => x.cat !== c.id);
+        state.cats = state.cats.filter(x => x.id !== c.id);
+        view = { t: "cat", id: (state.cats[0] || {}).id }; changed();
+        break;
+      }
+      case "catUp": moveCat(-1); break;
+      case "catDown": moveCat(1); break;
+      case "addCmd": openForm(null); break;
+      case "editCmd": openForm(+i); break;
+      case "delCmd":
+        if (confirm(`Удалить команду «${state.cmds[+i].name}»?`)) { state.cmds.splice(+i, 1); changed(); }
+        break;
+      case "cmdUp": swapCmd(+i, -1); break;
+      case "cmdDown": swapCmd(+i, 1); break;
+      case "saveCmd": saveCmd(i); break;
+      case "closeForm": closeForm(); break;
+      case "download": {
+        const blob = new Blob([serialize(state.bot, state.cats, state.cmds)], { type: "text/javascript;charset=utf-8" });
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "commands.js";
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        dirty = false; render(); toast("Файл скачан — загрузи его на GitHub");
+        break;
+      }
+      case "copy": {
+        const text = serialize(state.bot, state.cats, state.cmds);
+        const ok = () => toast("Код скопирован");
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(ok, () => toast("Не удалось скопировать"));
+        else { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); ok(); } catch (_) { toast("Не удалось скопировать"); } ta.remove(); }
+        break;
+      }
+      case "resetDraft":
+        if (confirm("Сбросить все правки и вернуться к версии с сайта?")) { dirty = false; try { localStorage.removeItem(DRAFT); } catch (_) {} location.reload(); }
+        break;
+    }
+  });
+
+  document.addEventListener("input", e => {
+    const t = e.target;
+    if (t.id === "catName") { const c = cat(view.id); if (c) { c.name = t.value; save(); $("#side").querySelector(".nav.on span").textContent = c.name || "—"; $("#main h2").textContent = c.name || "Раздел"; } }
+    else if (t.id === "catDesc") { const c = cat(view.id); if (c) { c.desc = t.value; save(); } }
+    else if (t.dataset.bot) {
+      const k = t.dataset.bot, v = t.value;
+      if (k === "note") state.bot.note = v.split("\n");
+      else if (k === "howTo") state.bot.howTo = v.split("\n").map(s => s.trim()).filter(Boolean).map(s => { const p = s.split("|"); return { where: (p[0] || "").trim(), code: (p.slice(1).join("|") || "").trim() }; });
+      else state.bot[k] = v;
+      save();
+    }
+  });
+  function save() {   // сохраняет без полной перерисовки, чтобы не терять фокус при печати
+    dirty = true;
+    try { localStorage.setItem(DRAFT, JSON.stringify(state)); } catch (_) {}
+    const st = $("#status"); st.textContent = "● есть несохранённые изменения"; st.className = "dirty";
+  }
+  document.addEventListener("change", e => {
+    if (e.target.id === "importFile" && e.target.files[0]) {
+      const r = new FileReader();
+      r.onload = () => {
+        const groups = parseCustom(String(r.result));
+        if (!groups.length) { alert("В файле не нашлось строк «group: …». Это точно custom_commands.txt?"); return; }
+        applyImport(groups);
+      };
+      r.readAsText(e.target.files[0], "utf-8");
+    }
+  });
+  $("#overlay").addEventListener("mousedown", e => { if (e.target.id === "overlay") closeForm(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeForm(); });
+  window.addEventListener("beforeunload", e => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+  render();
+})();
+</script>
+</body>
+</html>

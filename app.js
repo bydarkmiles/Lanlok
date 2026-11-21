@@ -72,7 +72,7 @@
     c._idx = {
       name: tokenize(c.name),
       aliases: tokenize((c.aliases || []).join(" ")),
-      cat: tokenize(catName(c.cat) + (c.admin ? " админ администратор" : "")),
+      cat: tokenize(catName(c.cat) + " " + (c.group || "") + (c.admin ? " админ администратор" : "")),
       desc: tokenize(c.desc),
       usage: tokenize(c.usage),
       example: tokenize(c.example || "")
@@ -191,7 +191,7 @@
       <article class="cmd">
         <div class="cmd-h">
           <span class="tag">${hl(c.name, tokens)}</span>
-          <span class="meta">• ${esc(cat ? cat.name : "")}</span>
+          <span class="meta">• ${esc(cat ? cat.name : "")}${c.group ? " · " + esc(c.group) : ""}</span>
           ${c.admin ? '<span class="badge">админ</span>' : ""}
         </div>
         <div class="cmd-b">
@@ -231,9 +231,12 @@
 
     const limit = !s && !state.expanded && state.cat === "all" && !state.admin ? PAGE : Infinity;
     const shown = items.slice(0, limit);
-    $("#list").innerHTML = shown.length
+    const sec = CATS.find(x => x.id === state.cat);
+    const secNote = !s && sec && sec.desc
+      ? `<div class="empty" style="margin-bottom:16px;text-align:left">${esc(sec.desc)}</div>` : "";
+    $("#list").innerHTML = secNote + (shown.length
       ? shown.map(c => cardHTML(c, tokens)).join("")
-      : `<div class="empty"><big>Пусто</big>Попробуй другое слово или сбрось фильтры.</div>`;
+      : `<div class="empty"><big>Пусто</big>Попробуй другое слово или сбрось фильтры.</div>`);
 
     const more = $("#more");
     more.hidden = items.length <= shown.length;
