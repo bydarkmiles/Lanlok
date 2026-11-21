@@ -95,7 +95,7 @@
 <body>
 <div class="app">
   <div class="top">
-    <div><h1>Редактор сайта команд</h1><small>Добавляй разделы и команды кнопками — без кода</small></div>
+    <div><h1>Редактор сайта команд</h1><small>Добавляй разделы и команды кнопками - без кода</small></div>
     <div class="actions">
       <span id="status"></span>
       <button class="btn primary" data-act="download">⬇ Скачать commands.js</button>
@@ -220,7 +220,7 @@
         <h4>Настройки раздела</h4>
         <label>Название раздела</label>
         <input type="text" id="catName" value="${esc(c.name)}" maxlength="40">
-        <label>Описание (необязательно — показывается над командами, когда раздел выбран)</label>
+        <label>Описание (необязательно - показывается над командами, когда раздел выбран)</label>
         <textarea id="catDesc" placeholder="Например: команды для работы с казной">${esc(c.desc || "")}</textarea>
         <div class="row" style="margin-top:12px">
           <button class="btn small ghost" data-act="catUp" ${idx === 0 ? "disabled" : ""}>↑ Выше</button>
@@ -270,7 +270,7 @@
           <div class="grow"><label>Сервер</label><input type="text" data-bot="server" value="${esc(b.server)}"></div>
           <div class="grow"><label>Версия</label><input type="text" data-bot="version" value="${esc(b.version)}"></div>
         </div>
-        <label>Заметка в шапке (каждая строка — отдельный абзац)</label>
+        <label>Заметка в шапке (каждая строка - отдельный абзац)</label>
         <textarea data-bot="note" style="min-height:100px">${esc((b.note || []).join("\n"))}</textarea>
         <label>Блок «Как вызвать команду» (каждая строка: <code>Где | что написать</code>)</label>
         <textarea data-bot="howTo" style="min-height:100px">${esc((b.howTo || []).map(h => h.where + " | " + h.code).join("\n"))}</textarea>
@@ -280,10 +280,10 @@
   function importView() {
     return `
       <h2>Импорт взаимодействий</h2>
-      <p class="lead">Загрузи файл <code>custom_commands.txt</code> из папки бота — редактор сам создаст раздел «Взаимодействия» и добавит в него новые команды по группам (Нежности, Интим…). Уже существующие команды и их описания не трогаются.</p>
+      <p class="lead">Загрузи файл <code>custom_commands.txt</code> из папки бота - редактор сам создаст раздел «Взаимодействия» и добавит в него новые команды по группам (Нежности, Интим…). Уже существующие команды и их описания не трогаются.</p>
       <div class="box">
         <input type="file" id="importFile" accept=".txt,text/plain">
-        <p class="tip">Файл никуда не отправляется — он читается прямо в твоём браузере.</p>
+        <p class="tip">Файл никуда не отправляется - он читается прямо в твоём браузере.</p>
       </div>`;
   }
 
@@ -296,10 +296,10 @@
         <li>Открой свой репозиторий на GitHub → <b>Add file → Upload files</b> → перетащи скачанный <code>commands.js</code> (он заменит старый) → <b>Commit changes</b>.</li>
         <li>Подожди минуту и обнови сайт (Ctrl+F5).</li>
       </ol>
-      <p class="tip">Если страница редактора закроется раньше времени — не страшно: твои правки сохраняются в браузере как черновик.</p></div>
+      <p class="tip">Если страница редактора закроется раньше времени - не страшно: твои правки сохраняются в браузере как черновик.</p></div>
       <div class="box"><h4>Как это пользоваться</h4><ol class="steps">
-        <li><b>+ Новый раздел</b> (слева) — создаёт раздел, он сразу появится в списке на сайте.</li>
-        <li><b>+ Добавить команду</b> — открывает форму: название, как написать, описание.</li>
+        <li><b>+ Новый раздел</b> (слева) - создаёт раздел, он сразу появится в списке на сайте.</li>
+        <li><b>+ Добавить команду</b> - открывает форму: название, как написать, описание.</li>
         <li>Стрелки ↑ ↓ меняют порядок разделов и команд.</li>
       </ol></div>`;
   }
@@ -445,7 +445,7 @@
         const blob = new Blob([serialize(state.bot, state.cats, state.cmds)], { type: "text/javascript;charset=utf-8" });
         const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "commands.js";
         document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-        dirty = false; render(); toast("Файл скачан — загрузи его на GitHub");
+        dirty = false; render(); toast("Файл скачан - загрузи его на GitHub");
         break;
       }
       case "copy": {
@@ -463,7 +463,7 @@
 
   document.addEventListener("input", e => {
     const t = e.target;
-    if (t.id === "catName") { const c = cat(view.id); if (c) { c.name = t.value; save(); $("#side").querySelector(".nav.on span").textContent = c.name || "—"; $("#main h2").textContent = c.name || "Раздел"; } }
+    if (t.id === "catName") { const c = cat(view.id); if (c) { c.name = t.value; save(); $("#side").querySelector(".nav.on span").textContent = c.name || "-"; $("#main h2").textContent = c.name || "Раздел"; } }
     else if (t.id === "catDesc") { const c = cat(view.id); if (c) { c.desc = t.value; save(); } }
     else if (t.dataset.bot) {
       const k = t.dataset.bot, v = t.value;
